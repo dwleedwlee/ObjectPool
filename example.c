@@ -17,32 +17,32 @@ OBJPOOL_LIST_HEAD(g_ObjHead, struct my_list, objpool, OBJECT_POOL_CAPACITY);
 void main(void) {
 	
 	printf("Address of source: 0x%p\n", &g_node);
-	printf("Is pool bind? : %d\n", objpool_is_bind(&g_ObjHead));
+	printf("Is the object pool bound? : %d\n", objpool_is_bound(&g_ObjHead));
 	objpool_bindto(&g_ObjHead, &g_node);	
-	printf("Is pool bind? : %d\n", objpool_is_bind(&g_ObjHead));
+	printf("Is the object pool bound? : %d\n", objpool_is_bound(&g_ObjHead));
 	
 	struct my_list *list[OBJECT_POOL_CAPACITY];
 	list[0] = objpool_alloc(&g_ObjHead);
 	list[0]->i = 24;
 	
-	printf("Is object member? : %d\n", objpool_is_member(&g_ObjHead, list[0]));
-	printf("Is object member? : %d\n", objpool_is_member(&g_ObjHead, list[1]));
+	printf("Is the object member of the object pool? : %d\n", objpool_is_member(&g_ObjHead, list[0]));
+	printf("Is the object member of the object pool? : %d\n", objpool_is_member(&g_ObjHead, list[1]));
 	
-	printf("Is object alloc? : %d\n", objpool_is_alloc(&g_ObjHead, list[0]));
+	printf("Is the object allocated? : %d\n", objpool_is_alloc(&g_ObjHead, list[0]));
 	objpool_free(&g_ObjHead, list[0]);
-	printf("Is object alloc? : %d\n", objpool_is_alloc(&g_ObjHead, list[0]));
+	printf("Is the object allocated? : %d\n", objpool_is_alloc(&g_ObjHead, list[0]));
 	
-	printf("Is object free? : %d\n", objpool_is_free(&g_ObjHead, list[0]));
-	printf("Is object free? : %d\n", objpool_is_free(&g_ObjHead, list[1]));
+	printf("Is the object free? : %d\n", objpool_is_free(&g_ObjHead, list[0]));
+	printf("Is the object free? : %d\n", objpool_is_free(&g_ObjHead, list[1]));
 	
-	printf("Is pool empty? : %d\n", objpool_is_empty(&g_ObjHead));
+	printf("Is the object pool empty? : %d\n", objpool_is_empty(&g_ObjHead));
 	for(int i = 0; i < OBJECT_POOL_CAPACITY; i++) {
 		list[i] = objpool_alloc(&g_ObjHead);
 		list[i]->i = i;
 	}
-	printf("Is pool full? : %d\n", objpool_is_full(&g_ObjHead));
+	printf("Is the object pool full? : %d\n", objpool_is_full(&g_ObjHead));
 	objpool_reset(&g_ObjHead);
-	printf("Is pool empty? : %d\n", objpool_is_empty(&g_ObjHead));
+	printf("Is the object pool empty? : %d\n", objpool_is_empty(&g_ObjHead));
 	
 	srand((unsigned int)time(NULL));
 	for(int i = 0; i < OBJECT_POOL_CAPACITY; i++) {
@@ -55,6 +55,6 @@ void main(void) {
 		if(n == 0) { objpool_free(&g_ObjHead, list[i]); }
 	}
 	
-	printf("Capacity of pool : %d\n", objpool_capacity(&g_ObjHead));
-	printf("Size of pool : %d\n", objpool_size(&g_ObjHead));
+	printf("Capacity of the object pool : %d\n", objpool_capacity(&g_ObjHead));
+	printf("Size of the object pool : %d\n", objpool_size(&g_ObjHead));
 }

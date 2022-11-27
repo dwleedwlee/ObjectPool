@@ -1,3 +1,25 @@
+/*
+  The MIT License (MIT)
+  
+  Copyright (c) 2022 Dongwook Lee (elight.lee@gmail.com)
+  
+  Permission is hereby granted, free of charge, to any person obtaining a copy of
+  this software and associated documentation files (the "Software"), to deal in
+  the Software without restriction, including without limitation the rights to
+  use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+  the Software, and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+  FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 #ifndef __OBJECT_POOL_H__
 #define __OBJECT_POOL_H__
 
@@ -6,6 +28,7 @@
 
 /*
  * Circular single linked list implementation.
+ * The list structure idea comes from the list.h of the Linux.
  */
 
 struct objpool_list {
@@ -37,11 +60,11 @@ struct objpool_list_header {
 	struct objpool_list_header name = OBJPOOL_LIST_HEAD_INIT(name, type, member, capacity)
 
 extern void objpool_bindto(struct objpool_list_header *head, void *objs);
-extern bool objpool_is_bind(struct objpool_list_header *head);
+extern bool objpool_is_bound(struct objpool_list_header *head);
 extern void objpool_reset(struct objpool_list_header *head);
+extern bool objpool_is_member(struct objpool_list_header *head, void *ptr);
 extern void *objpool_alloc(struct objpool_list_header *head);
 extern void objpool_free(struct objpool_list_header *head, void *ptr);
-extern bool objpool_is_member(struct objpool_list_header *head, void *ptr);
 extern bool objpool_is_alloc(struct objpool_list_header *head, void *ptr);
 extern bool objpool_is_free(struct objpool_list_header *head, void *ptr);
 extern const size_t objpool_capacity(struct objpool_list_header *head);
