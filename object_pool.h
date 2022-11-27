@@ -4,36 +4,49 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-struct list_objpool {
-	struct list_objpool *next_available;
+/*
+ * Circular single linked list implementation.
+ */
+
+struct objpool_list {
+	struct objpool_list *next_available;
 };
 
-struct list_objpool_header {
-	struct list_objpool available_obj;
-	struct list_objpool *start_obj;
+struct objpool_list_header {
+	struct objpool_list available_obj;
+	struct objpool_list *start_obj;
 	size_t allocated;
 	const size_t unit_size;
 	const size_t offset;
 	const size_t capacity;	
 };
 
-#define LIST_OBJPOOL_HEAD_INIT(name, type, member, capacity) \
+#define OBJPOOL_LIST_HEAD_INIT(name, type, member, capacity) \
 	{ {&name.available_obj}, NULL, 0, sizeof(type), offsetof(type, member), capacity }
 
-#define LIST_OBJPOOL_HEAD(name, type, member, capacity)	\
-	struct list_objpool_header name = LIST_OBJPOOL_HEAD_INIT(name, type, member, capacity)
+/**
+ * OBJPOOL_LIST_HEAD - Initialize a objpool_list_head structure
+ * @name: name of the objpool_list_head to be initialized.
+ * @type: type of elements which of the object pool contains
+ * @member: name of 'struct objpool_list' type member of the element
+ * @capacity: number of the elements (element shoule be contained in array) 
+ *
+ * Initializes the head of object pool to point to itself.
+ */
+#define OBJPOOL_LIST_HEAD(name, type, member, capacity)	\
+	struct objpool_list_header name = OBJPOOL_LIST_HEAD_INIT(name, type, member, capacity)
 
-void pool_bindto(struct list_objpool_header *head, void *objs);
-bool pool_is_bind(struct list_objpool_header *head);
-void pool_reset(struct list_objpool_header *head);
-void *pool_alloc(struct list_objpool_header *head);
-void pool_free(struct list_objpool_header *head, void *ptr);
-bool pool_is_member(struct list_objpool_header *head, void *ptr);
-bool pool_is_alloc(struct list_objpool_header *head, void *ptr);
-bool pool_is_free(struct list_objpool_header *head, void *ptr);
-const size_t pool_capacity(struct list_objpool_header *head);
-const size_t pool_size(struct list_objpool_header *head);
-bool pool_is_full(struct list_objpool_header *head);
-bool pool_is_empty(struct list_objpool_header *head);
+extern void objpool_bindto(struct objpool_list_header *head, void *objs);
+extern bool objpool_is_bind(struct objpool_list_header *head);
+extern void objpool_reset(struct objpool_list_header *head);
+extern void *objpool_alloc(struct objpool_list_header *head);
+extern void objpool_free(struct objpool_list_header *head, void *ptr);
+extern bool objpool_is_member(struct objpool_list_header *head, void *ptr);
+extern bool objpool_is_alloc(struct objpool_list_header *head, void *ptr);
+extern bool objpool_is_free(struct objpool_list_header *head, void *ptr);
+extern const size_t objpool_capacity(struct objpool_list_header *head);
+extern const size_t objpool_size(struct objpool_list_header *head);
+extern bool objpool_is_full(struct objpool_list_header *head);
+extern bool objpool_is_empty(struct objpool_list_header *head);
 
 #endif
