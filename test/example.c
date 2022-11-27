@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "object_pool.h"
+#include "../src/object_pool.h"
 
 #define OBJECT_POOL_CAPACITY		(2000)
 
