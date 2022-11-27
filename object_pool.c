@@ -36,7 +36,7 @@ void objpool_bindto(struct objpool_list_header *head, void *objs) {
 }
 
 /**
- * objpool_is_bound - checks whether an object pool is bind
+ * objpool_is_bound - checks whether an object pool is bound
  * @head: object pool head to check
  */	
 bool objpool_is_bound(struct objpool_list_header *head) {

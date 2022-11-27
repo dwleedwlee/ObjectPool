@@ -28,7 +28,8 @@
 
 /*
  * Circular single linked list implementation.
- * The list structure idea comes from the list.h of the Linux.
+ * The idea of constructing an object pool with generic type comes from 
+ * the list.h source code of the Linux
  */
 
 struct objpool_list {
