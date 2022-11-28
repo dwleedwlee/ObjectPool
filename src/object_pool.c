@@ -23,35 +23,22 @@
 #include "object_pool.h"
 
 /**
- * objpool_bindto - Construct the object pool 
- * @head: object pool head to bind to address space of the objs
- * @objs: pointer of the address space which contains the objpool elements
- *
- * Construct the object pool by binding address space and 
- * reset the object pool.
- */	
-void objpool_bindto(struct objpool_list_header *head, void *objs) {
-	head->start_obj = (struct objpool_list *)((char *)objs + head->offset);
-	objpool_reset(head);
-}
-
-/**
- * objpool_is_bound - checks whether an object pool is bound
+ * objpool_is_init_head - checks whether a header of object pool is initialized
  * @head: object pool head to check
  */	
-bool objpool_is_bound(struct objpool_list_header *head) {
+static bool objpool_is_init_head(struct objpool_list_header *head) {
 	return ((head->capacity > 0) && (head->unit_size >= sizeof(struct objpool_list)) && 
 	(head->start_obj != NULL)) ? true : false;
 }
 
 /**
- * objpool_reset - reset the object pool 
- * @head: object pool head to reset
+ * objpool_init - initialize the object pool 
+ * @head: object pool head to initialize
  *
- * Reset the object pool by initializing the list chain of the object pool. 
+ * Initialize the object pool by chaining the list pointer of the object pool. 
  */	
-void objpool_reset(struct objpool_list_header *head) {
-	if(objpool_is_bound(head)) {
+void objpool_init(struct objpool_list_header *head) {
+	if(objpool_is_init_head(head)) {
 		int i = 0;
 		head->available_obj.next_available = head->start_obj;
 		struct objpool_list *next = head->start_obj;
@@ -90,7 +77,7 @@ bool objpool_is_member(struct objpool_list_header *head, void *ptr) {
  *
  * Allocate an object from the object pool and return the address.
  */	
-void *objpool_alloc(struct objpool_list_header *head) {
+void *const objpool_alloc(struct objpool_list_header *head) {
 	struct objpool_list *next = head->available_obj.next_available;
 	void *ptr = NULL;
 	if(next != &(head->available_obj)) {
@@ -120,13 +107,18 @@ void objpool_free(struct objpool_list_header *head, void *ptr) {
 	}
 }
 
+/**
+ * objpool_ptr_is_alloc - checks whether an object is an allocated state
+ * @head: object pool head
+ * @ptr: pointer of the object to check
+ */	
 static bool objpool_ptr_is_alloc(struct objpool_list_header *head, void *ptr) {
 	struct objpool_list *next = (struct objpool_list *)((char *)ptr + head->offset);
 	return (next->next_available == NULL) ? true : false;
 }	
 
 /**
- * objpool_is_alloc - checks whether an object is an allocated state
+ * objpool_is_alloc - checks whether an object is a member of object pool and is an allocated state
  * @head: object pool head
  * @ptr: pointer of the object to check
  */	
@@ -139,7 +131,7 @@ bool objpool_is_alloc(struct objpool_list_header *head, void *ptr) {
 }
 
 /**
- * objpool_is_free - checks whether an object is a free state
+ * objpool_is_free - checks whether an object is a member of object pool and is a free state
  * @head: object pool head
  * @ptr: pointer of the object to check
  */
@@ -160,11 +152,19 @@ const size_t objpool_capacity(struct objpool_list_header *head) {
 }
 
 /**
- * objpool_capacity - return the number of allocated elements of the object pool
+ * objpool_size - return the number of allocated elements of the object pool
  * @head: object pool head
  */
 const size_t objpool_size(struct objpool_list_header *head) {
 	return head->allocated;
+}
+
+/**
+ * objpool_addr - return the start address of the object pool
+ * @head: object pool head
+ */
+void *const objpool_addr(struct objpool_list_header *head) {
+	return head->start_obj;
 }
 
 /**

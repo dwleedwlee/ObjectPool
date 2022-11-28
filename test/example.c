@@ -12,14 +12,12 @@ struct my_list {
 
 struct my_list g_node[OBJECT_POOL_CAPACITY];
 
-OBJPOOL_LIST_HEAD(g_ObjHead, struct my_list, objpool, OBJECT_POOL_CAPACITY);
+OBJPOOL_LIST_HEAD(g_ObjHead, struct my_list, g_node, OBJECT_POOL_CAPACITY, objpool);
 
 void main(void) {
-	
-	printf("Address of source: 0x%p\n", &g_node);
-	printf("Is the object pool bound? : %d\n", objpool_is_bound(&g_ObjHead));
-	objpool_bindto(&g_ObjHead, &g_node);	
-	printf("Is the object pool bound? : %d\n", objpool_is_bound(&g_ObjHead));
+	printf("Address of the source: 0x%p\n", &g_node);
+	objpool_init(&g_ObjHead);	
+	printf("Address of the object pool: 0x%p\n", objpool_addr(&g_ObjHead));
 	
 	struct my_list *list[OBJECT_POOL_CAPACITY];
 	list[0] = objpool_alloc(&g_ObjHead);
@@ -41,7 +39,7 @@ void main(void) {
 		list[i]->i = i;
 	}
 	printf("Is the object pool full? : %d\n", objpool_is_full(&g_ObjHead));
-	objpool_reset(&g_ObjHead);
+	objpool_init(&g_ObjHead);
 	printf("Is the object pool empty? : %d\n", objpool_is_empty(&g_ObjHead));
 	
 	srand((unsigned int)time(NULL));
